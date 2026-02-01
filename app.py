@@ -301,12 +301,12 @@ def analyze_message():
         
         data = request.get_json(silent=True)
 
-    # Allow tester call (no JSON body)
-    if data is None:
-        return jsonify({
-            "status": "success",
-            "reply": "HoneyPot API is active"
-        }), 200
+        # Allow tester call (no JSON body)
+        if data is None:
+            return jsonify({
+                "status": "success",
+                "reply": "HoneyPot API is active"
+            }), 200
 
         
         # Extract fields according to hackathon format
@@ -453,3 +453,4 @@ if __name__ == '__main__':
         port=port,
         debug=False
     )
+
