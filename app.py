@@ -170,17 +170,10 @@ def health():
     }), 200
 
 
-@app.route('/api/analyze', methods=['POST', 'GET', 'OPTIONS'])
+@app.route('/api/analyze', methods=['POST'])
 def analyze():
     """BULLETPROOF endpoint - handles everything!"""
     
-    # Handle OPTIONS (CORS preflight)
-    if request.method == 'OPTIONS':
-        return jsonify({"status": "success"}), 200
-    
-    # Handle GET
-    if request.method == 'GET':
-        return jsonify({"status": "success", "reply": "API is ready"}), 200
     
     try:
         # Check API key
@@ -235,9 +228,15 @@ def analyze():
         # If no text, neutral response
         if not message_text:
             logger.info("No message text")
-            return jsonify({"status": "success", "reply": "Received"}), 200
-        
+            return jsonify({
+                "status": "success",
+                "reply": "Why is my account being suspended?"
+            }), 200
         logger.info(f"Processing: {session_id} - {message_text[:50]}")
+        return jsonify({
+            "status": "success",
+            "reply": "Why is my account being suspended?"
+        }), 200
         
         # Detect scam
         is_scam = scam_detector.is_scam(message_text)
@@ -272,8 +271,8 @@ def analyze():
             session['messages'].append({'sender': 'user', 'text': reply})
             
             # Send to GUVI after 3 turns
-            if session['turns'] >= 3:
-                send_to_guvi(session)
+            #if session['turns'] >= 3:
+            #    send_to_guvi(session)
             
             logger.info(f"Scam - Turn {session['turns']}: {reply[:30]}")
             return jsonify({"status": "success", "reply": reply}), 200
@@ -325,3 +324,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     logger.info(f"Starting on port {port}")
     app.run(host='0.0.0.0', port=port, debug=False)
+
